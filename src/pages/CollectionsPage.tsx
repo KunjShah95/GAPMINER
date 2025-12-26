@@ -1,0 +1,416 @@
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Link } from "react-router-dom"
+import {
+    FolderPlus,
+    Folder,
+    Star,
+    StarOff,
+    Share2,
+    Trash2,
+    MoreHorizontal,
+    Plus,
+    Search,
+    FileText,
+    ExternalLink,
+    Download,
+    Check
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+
+interface Collection {
+    id: string
+    name: string
+    description: string
+    gapCount: number
+    paperCount: number
+    starred: boolean
+    createdAt: string
+    color: string
+}
+
+interface Gap {
+    id: string
+    problem: string
+    paper: string
+    type: "data" | "compute" | "evaluation" | "methodology"
+}
+
+const mockCollections: Collection[] = [
+    {
+        id: "1",
+        name: "NLP Scalability Issues",
+        description: "Research gaps related to scaling language models",
+        gapCount: 8,
+        paperCount: 5,
+        starred: true,
+        createdAt: "2024-03-15",
+        color: "hsl(var(--brand-primary))"
+    },
+    {
+        id: "2",
+        name: "Evaluation Metrics Review",
+        description: "Papers discussing benchmark limitations",
+        gapCount: 12,
+        paperCount: 8,
+        starred: false,
+        createdAt: "2024-03-12",
+        color: "hsl(var(--gap-evaluation))"
+    },
+    {
+        id: "3",
+        name: "Low-Resource Languages",
+        description: "Data scarcity in multilingual models",
+        gapCount: 6,
+        paperCount: 4,
+        starred: true,
+        createdAt: "2024-03-10",
+        color: "hsl(var(--gap-data))"
+    },
+    {
+        id: "4",
+        name: "Thesis Research",
+        description: "Potential directions for my PhD research",
+        gapCount: 15,
+        paperCount: 10,
+        starred: false,
+        createdAt: "2024-03-08",
+        color: "hsl(var(--brand-secondary))"
+    }
+]
+
+const mockGaps: Gap[] = [
+    {
+        id: "1",
+        problem: "Models fail to generalize to low-resource languages due to lack of training data",
+        paper: "Scaling Laws for Neural Language Models",
+        type: "data"
+    },
+    {
+        id: "2",
+        problem: "Training costs prevent scaling to long-context inputs beyond 32K tokens",
+        paper: "GPT-4 Technical Report",
+        type: "compute"
+    },
+    {
+        id: "3",
+        problem: "Evaluation benchmarks don't reflect real-world conversational complexity",
+        paper: "Attention Is All You Need",
+        type: "evaluation"
+    }
+]
+
+export function CollectionsPage() {
+    const [collections, setCollections] = useState(mockCollections)
+    const [selectedCollection, setSelectedCollection] = useState<string | null>(null)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [showCreateModal, setShowCreateModal] = useState(false)
+    const [newCollectionName, setNewCollectionName] = useState("")
+
+    const toggleStar = (id: string) => {
+        setCollections(prev =>
+            prev.map(c => c.id === id ? { ...c, starred: !c.starred } : c)
+        )
+    }
+
+    const handleCreateCollection = () => {
+        if (!newCollectionName.trim()) return
+        const newCollection: Collection = {
+            id: Date.now().toString(),
+            name: newCollectionName,
+            description: "",
+            gapCount: 0,
+            paperCount: 0,
+            starred: false,
+            createdAt: new Date().toISOString().split("T")[0],
+            color: `hsl(${Math.random() * 360}, 70%, 50%)`
+        }
+        setCollections(prev => [newCollection, ...prev])
+        setNewCollectionName("")
+        setShowCreateModal(false)
+    }
+
+    const filteredCollections = collections.filter(c =>
+        c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.description.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    const starredCollections = filteredCollections.filter(c => c.starred)
+    const otherCollections = filteredCollections.filter(c => !c.starred)
+
+    return (
+        <div className="min-h-screen py-12">
+            <div className="container-wide">
+                {/* Header */}
+                <div className="mb-8 flex items-start justify-between">
+                    <div>
+                        <div className="section-number mb-4">COLLECTIONS</div>
+                        <h1 className="heading-section mb-4">
+                            Research Gap
+                            <br />
+                            <span className="gradient-text">Collections</span>
+                        </h1>
+                        <p className="text-lg text-[hsl(var(--muted-foreground))] max-w-2xl">
+                            Organize your research gaps into themed collections.
+                            Share, export, or use them to track research directions.
+                        </p>
+                    </div>
+                    <Button onClick={() => setShowCreateModal(true)} className="gap-2">
+                        <FolderPlus className="h-4 w-4" />
+                        New Collection
+                    </Button>
+                </div>
+
+                {/* Search */}
+                <div className="mb-8">
+                    <div className="relative max-w-md">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(var(--muted-foreground))]" />
+                        <Input
+                            placeholder="Search collections..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-10"
+                        />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Collections List */}
+                    <div className="lg:col-span-2 space-y-6">
+                        {/* Starred */}
+                        {starredCollections.length > 0 && (
+                            <div>
+                                <h2 className="font-semibold mb-4 flex items-center gap-2">
+                                    <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                                    Starred Collections
+                                </h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {starredCollections.map((collection, idx) => (
+                                        <motion.div
+                                            key={collection.id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: idx * 0.05 }}
+                                        >
+                                            <Card
+                                                className={cn(
+                                                    "cursor-pointer card-hover",
+                                                    selectedCollection === collection.id && "ring-2 ring-[hsl(var(--ring))]"
+                                                )}
+                                                onClick={() => setSelectedCollection(collection.id)}
+                                            >
+                                                <CardContent className="pt-6">
+                                                    <div className="flex items-start justify-between mb-3">
+                                                        <div
+                                                            className="h-10 w-10 rounded-lg flex items-center justify-center"
+                                                            style={{ backgroundColor: collection.color + "20" }}
+                                                        >
+                                                            <Folder
+                                                                className="h-5 w-5"
+                                                                style={{ color: collection.color }}
+                                                            />
+                                                        </div>
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); toggleStar(collection.id) }}
+                                                            className="p-1 hover:bg-[hsl(var(--muted))] rounded"
+                                                        >
+                                                            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                                                        </button>
+                                                    </div>
+                                                    <h3 className="font-semibold mb-1">{collection.name}</h3>
+                                                    <p className="text-sm text-[hsl(var(--muted-foreground))] mb-4 line-clamp-2">
+                                                        {collection.description}
+                                                    </p>
+                                                    <div className="flex items-center gap-3 text-xs text-[hsl(var(--muted-foreground))]">
+                                                        <span>{collection.gapCount} gaps</span>
+                                                        <span>•</span>
+                                                        <span>{collection.paperCount} papers</span>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Other Collections */}
+                        <div>
+                            <h2 className="font-semibold mb-4 flex items-center gap-2">
+                                <Folder className="h-4 w-4" />
+                                All Collections
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {otherCollections.map((collection, idx) => (
+                                    <motion.div
+                                        key={collection.id}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: idx * 0.05 }}
+                                    >
+                                        <Card
+                                            className={cn(
+                                                "cursor-pointer card-hover",
+                                                selectedCollection === collection.id && "ring-2 ring-[hsl(var(--ring))]"
+                                            )}
+                                            onClick={() => setSelectedCollection(collection.id)}
+                                        >
+                                            <CardContent className="pt-6">
+                                                <div className="flex items-start justify-between mb-3">
+                                                    <div
+                                                        className="h-10 w-10 rounded-lg flex items-center justify-center"
+                                                        style={{ backgroundColor: collection.color + "20" }}
+                                                    >
+                                                        <Folder
+                                                            className="h-5 w-5"
+                                                            style={{ color: collection.color }}
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); toggleStar(collection.id) }}
+                                                        className="p-1 hover:bg-[hsl(var(--muted))] rounded"
+                                                    >
+                                                        <StarOff className="h-4 w-4 text-[hsl(var(--muted-foreground))]" />
+                                                    </button>
+                                                </div>
+                                                <h3 className="font-semibold mb-1">{collection.name}</h3>
+                                                <p className="text-sm text-[hsl(var(--muted-foreground))] mb-4 line-clamp-2">
+                                                    {collection.description}
+                                                </p>
+                                                <div className="flex items-center gap-3 text-xs text-[hsl(var(--muted-foreground))]">
+                                                    <span>{collection.gapCount} gaps</span>
+                                                    <span>•</span>
+                                                    <span>{collection.paperCount} papers</span>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Sidebar - Collection Details */}
+                    <div>
+                        {selectedCollection ? (
+                            <Card className="sticky top-20">
+                                <CardHeader className="pb-3">
+                                    <div className="flex items-center justify-between">
+                                        <CardTitle className="text-lg">Collection Details</CardTitle>
+                                        <div className="flex gap-1">
+                                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                <Share2 className="h-4 w-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                <Download className="h-4 w-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div>
+                                        <h4 className="text-sm font-medium mb-2">Gaps in this collection</h4>
+                                        <div className="space-y-2">
+                                            {mockGaps.map((gap) => (
+                                                <div
+                                                    key={gap.id}
+                                                    className="p-3 rounded-lg bg-[hsl(var(--muted))] text-sm"
+                                                >
+                                                    <p className="line-clamp-2 text-xs">{gap.problem}</p>
+                                                    <p className="text-[10px] text-[hsl(var(--muted-foreground))] mt-1">
+                                                        {gap.paper}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 border-t border-[hsl(var(--border))] space-y-2">
+                                        <Button variant="outline" size="sm" className="w-full gap-2">
+                                            <Plus className="h-3 w-3" />
+                                            Add Gaps
+                                        </Button>
+                                        <Link to="/explore">
+                                            <Button variant="ghost" size="sm" className="w-full gap-2">
+                                                <ExternalLink className="h-3 w-3" />
+                                                Browse All Gaps
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ) : (
+                            <Card className="border-dashed">
+                                <CardContent className="py-12 text-center">
+                                    <Folder className="h-12 w-12 mx-auto mb-4 text-[hsl(var(--muted-foreground))] opacity-50" />
+                                    <p className="text-[hsl(var(--muted-foreground))]">
+                                        Select a collection to view details
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Create Modal */}
+            <AnimatePresence>
+                {showCreateModal && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-50 bg-black/50"
+                            onClick={() => setShowCreateModal(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md p-4"
+                        >
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Create New Collection</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div>
+                                        <label className="text-sm font-medium mb-2 block">
+                                            Collection Name
+                                        </label>
+                                        <Input
+                                            placeholder="e.g., NLP Research Gaps"
+                                            value={newCollectionName}
+                                            onChange={(e) => setNewCollectionName(e.target.value)}
+                                            autoFocus
+                                        />
+                                    </div>
+                                    <div className="flex gap-2 justify-end">
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => setShowCreateModal(false)}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={handleCreateCollection}>
+                                            <Check className="h-4 w-4 mr-2" />
+                                            Create
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+        </div>
+    )
+}
