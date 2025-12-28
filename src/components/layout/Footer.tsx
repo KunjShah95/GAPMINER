@@ -166,13 +166,13 @@ export function Footer() {
                     </div>
                     <div className="flex items-center gap-4">
                         <a
-                            href="mailto:support@gapminer.ai"
+                            href="mailto:kunjkshahdeveloper@gmail.com"
                             className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
                         >
                             <Mail className="h-5 w-5" />
                         </a>
                         <a
-                            href="https://github.com"
+                            href="https://github.com/KunjShah95"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
@@ -180,7 +180,7 @@ export function Footer() {
                             <Github className="h-5 w-5" />
                         </a>
                         <a
-                            href="https://twitter.com"
+                            href="https://x.com/kunjshah_dev"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
@@ -188,7 +188,7 @@ export function Footer() {
                             <Twitter className="h-5 w-5" />
                         </a>
                         <a
-                            href="https://linkedin.com"
+                            href="https://linkedin.com/in/kunjshah05"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"

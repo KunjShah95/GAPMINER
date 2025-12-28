@@ -25,12 +25,12 @@ const publicNavItems = [
     { name: "About", href: "#about" },
     { name: "Features", href: "#features" },
     { name: "How It Works", href: "#how-it-works" },
+    { name: "Pricing", href: "#pricing" },
+    { name: "FAQ", href: "#faq" },
     { name: "Contact", href: "#contact" },
 ]
 
-// App navigation items (visible when authenticated)
 const appNavItems = [
-    { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
     { name: "Crawl", path: "/crawl", icon: FileSearch },
     { name: "Explore", path: "/explore", icon: Search },
     { name: "Insights", path: "/insights", icon: Lightbulb },
@@ -95,7 +95,7 @@ export function Navbar() {
             <div className="container-wide">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2 group">
+                    <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 group">
                         <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] transition-transform group-hover:scale-105">
                             <FileSearch className="h-5 w-5" />
                             <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[hsl(var(--brand-primary))] text-[8px] font-bold text-white">
@@ -125,7 +125,7 @@ export function Navbar() {
                         ) : isAuthenticated ? (
                             // App navigation for authenticated users
                             <>
-                                {appNavItems.slice(0, 5).map((item) => {
+                                {appNavItems.slice(0, 4).map((item) => {
                                     const isActive = location.pathname === item.path
                                     return (
                                         <button
@@ -155,7 +155,7 @@ export function Navbar() {
                                     )
                                 })}
                                 <div className="border-l border-[hsl(var(--border))] pl-1 ml-1">
-                                    <button onClick={() => handleNavClick(appNavItems[5])}>
+                                    <button onClick={() => handleNavClick(appNavItems[4])}>
                                         <Button
                                             variant="ghost"
                                             size="sm"

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useRef, useState } from "react"
 import {
     FileSearch,
@@ -28,7 +28,9 @@ import {
     Shield,
     MessageSquare,
     MapPin,
-    Phone
+    Check,
+    Plus,
+    Minus
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -38,6 +40,7 @@ import { BackgroundBeams } from "@/components/ui/background-beams"
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect"
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
 import { useAuth } from "@/context/AuthContext"
+
 
 // Stats data
 const stats = [
@@ -136,6 +139,103 @@ const trustedBy = [
     "Stanford", "MIT", "DeepMind", "OpenAI", "Google Research", "Meta AI"
 ]
 
+// Pricing data
+const pricing = [
+    {
+        name: "Starter",
+        price: "$0",
+        description: "Perfect for individual researchers starting their journey.",
+        features: [
+            "50 papers per month",
+            "Basic AI analysis",
+            "Standard extraction",
+            "Export to CSV",
+            "Community support"
+        ],
+        cta: "Start for Free",
+        popular: false
+    },
+    {
+        name: "Pro",
+        price: "$29",
+        description: "For serious researchers needing deeper insights.",
+        features: [
+            "Unlimited papers",
+            "Advanced AI insights",
+            "Cross-paper analysis",
+            "Priority extraction",
+            "PDF reports",
+            "Email support"
+        ],
+        cta: "Get Pro",
+        popular: true
+    },
+    {
+        name: "Team",
+        price: "$99",
+        description: "Collaborative power for research labs and groups.",
+        features: [
+            "Everything in Pro",
+            "5 Team members",
+            "Collaborative collections",
+            "Shared comments",
+            "API access",
+            "Dedicated support"
+        ],
+        cta: "Contact Sales",
+        popular: false
+    }
+]
+
+// FAQ data
+const faqs = [
+    {
+        question: "How does the AI analysis work?",
+        answer: "GapMiner uses advanced large language models (LLMs) to read and understand research papers. It specifically identifies limitations mentioned by authors and infers potential future work based on the context of the research."
+    },
+    {
+        question: "Is my research data secure?",
+        answer: "Yes, absolutely. We use enterprise-grade encryption for all data. Your search history and collections are private to you and are never used to train our public models."
+    },
+    {
+        question: "Can I export the results?",
+        answer: "Yes! You can export your findings in various formats including CSV, JSON, and PDF reports. This makes it easy to integrate GapMiner into your existing literature review workflow."
+    },
+    {
+        question: "What sources do you support?",
+        answer: "We currently support direct PDF URLs, arXiv links, OpenReview, ACL Anthology, and most major publisher pages. We are constantly adding support for more repositories."
+    }
+]
+
+const FAQItem = ({ question, answer }: { question: string, answer: string }) => {
+    const [isOpen, setIsOpen] = useState(false)
+    return (
+        <div className="border border-[hsl(var(--border))] rounded-lg overflow-hidden">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center justify-between w-full p-4 text-left font-medium bg-[hsl(var(--card))] hover:bg-[hsl(var(--muted))] transition-colors"
+            >
+                {question}
+                {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+            </button>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <div className="p-4 pt-0 bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))]">
+                            {answer}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    )
+}
+
 export function HomePage() {
     const { isAuthenticated, user, setShowAuthModal, setAuthModalMode } = useAuth()
     const navigate = useNavigate()
@@ -146,11 +246,15 @@ export function HomePage() {
     const aboutRef = useRef(null)
     const featuresRef = useRef(null)
     const howItWorksRef = useRef(null)
+    const pricingRef = useRef(null)
+    const faqRef = useRef(null)
     const contactRef = useRef(null)
 
     const aboutInView = useInView(aboutRef, { once: true, margin: "-100px" })
     const featuresInView = useInView(featuresRef, { once: true, margin: "-100px" })
     const howItWorksInView = useInView(howItWorksRef, { once: true, margin: "-100px" })
+    const pricingInView = useInView(pricingRef, { once: true, margin: "-100px" })
+    const faqInView = useInView(faqRef, { once: true, margin: "-100px" })
     const contactInView = useInView(contactRef, { once: true, margin: "-100px" })
 
     const handleSignIn = () => {
@@ -610,17 +714,122 @@ export function HomePage() {
                 </div>
             </section>
 
+
+
+
+            <section id="pricing" ref={pricingRef} className="py-24 bg-[hsl(var(--muted))]" >
+                <div className="container-wide">
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={pricingInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <div className="section-number mb-4">05 / PRICING</div>
+                        <div className="text-center max-w-3xl mx-auto mb-16">
+                            <h2 className="heading-section mb-4">
+                                Simple, transparent
+                                <br />
+                                <span className="gradient-text">pricing for everyone</span>
+                            </h2>
+                            <p className="text-lg text-[hsl(var(--muted-foreground))]">
+                                Choose the plan that best fits your research needs.
+                            </p>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-8">
+                            {pricing.map((plan, idx) => (
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={pricingInView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                                >
+                                    <div className={`relative h-full p-8 rounded-2xl border ${plan.popular ? 'border-[hsl(var(--brand-primary))] bg-[hsl(var(--card))] shadow-lg shadow-[hsl(var(--brand-primary))]/20' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))]'}`}>
+                                        {plan.popular && (
+                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[hsl(var(--brand-primary))] text-white text-sm font-medium">
+                                                Most Popular
+                                            </div>
+                                        )}
+                                        <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                                        <div className="flex items-baseline gap-1 mb-4">
+                                            <span className="text-4xl font-bold">{plan.price}</span>
+                                            <span className="text-[hsl(var(--muted-foreground))]">/month</span>
+                                        </div>
+                                        <p className="text-[hsl(var(--muted-foreground))] mb-6">{plan.description}</p>
+
+                                        <ul className="space-y-4 mb-8">
+                                            {plan.features.map((feature, fIdx) => (
+                                                <li key={fIdx} className="flex items-start gap-3">
+                                                    <Check className="h-5 w-5 text-[hsl(var(--brand-primary))] shrink-0" />
+                                                    <span className="text-sm">{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+
+                                        <Button
+                                            className={`w-full ${plan.popular ? '' : 'bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted-foreground))]/20'}`}
+                                            variant={plan.popular ? "default" : "outline"}
+                                            onClick={handleGetStarted}
+                                        >
+                                            {plan.cta}
+                                        </Button>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* ============================================
+                FAQ SECTION
+            ============================================ */}
+            <section id="faq" ref={faqRef} className="py-24" >
+                <div className="container-wide">
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={faqInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <div className="section-number mb-4">06 / FAQ</div>
+                        <div className="grid md:grid-cols-2 gap-12">
+                            <div>
+                                <h2 className="heading-section mb-6">
+                                    Frequently asked
+                                    <br />
+                                    <span className="gradient-text">questions</span>
+                                </h2>
+                                <p className="text-lg text-[hsl(var(--muted-foreground))] mb-8">
+                                    Can't find the answer you're looking for? Reach out to our team.
+                                </p>
+                                <Button variant="outline" className="gap-2" onClick={() => scrollToSection("contact")}>
+                                    <MessageSquare className="h-4 w-4" />
+                                    Contact Support
+                                </Button>
+                            </div>
+
+                            <div className="space-y-4">
+                                {faqs.map((faq, idx) => (
+                                    <FAQItem key={idx} question={faq.question} answer={faq.answer} />
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
             {/* ============================================
                 CONTACT US SECTION
             ============================================ */}
-            <section id="contact" ref={contactRef} className="py-24 bg-[hsl(var(--muted))]">
+            <section id="contact" ref={contactRef} className="py-24 bg-[hsl(var(--muted))]" >
                 <div className="container-wide">
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         animate={contactInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 0.6 }}
                     >
-                        <div className="section-number mb-4">05 / CONTACT US</div>
+
+                        <div className="section-number mb-4">07 / CONTACT US</div>
                         <div className="grid lg:grid-cols-2 gap-12">
                             <div>
                                 <h2 className="heading-section mb-6">
@@ -640,7 +849,7 @@ export function HomePage() {
                                         </div>
                                         <div>
                                             <div className="font-semibold">Email</div>
-                                            <div className="text-[hsl(var(--muted-foreground))]">support@gapminer.ai</div>
+                                            <div className="text-[hsl(var(--muted-foreground))]">kunjkshahdeveloper@gmail.com</div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">
@@ -738,9 +947,9 @@ export function HomePage() {
             {/* ============================================
                 FINAL CTA SECTION
             ============================================ */}
-            <section className="py-24 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] relative overflow-hidden">
+            <section className="py-24 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] relative overflow-hidden" >
                 {/* Background Pattern */}
-                <div className="absolute inset-0 dot-pattern opacity-10" />
+                < div className="absolute inset-0 dot-pattern opacity-10" />
 
                 <div className="container-wide text-center relative z-10">
                     <motion.div

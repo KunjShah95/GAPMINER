@@ -269,7 +269,7 @@ vercel --prod
 
 #### Vercel Configuration
 
-Create `vercel.json` in root (optional):
+A `vercel.json` configuration file is already included in the project root:
 
 ```json
 {
@@ -316,7 +316,7 @@ netlify deploy --prod
 
 #### Netlify Configuration
 
-Create `netlify.toml` in root:
+A `netlify.toml` configuration file is already included in the project root:
 
 ```toml
 [build]
@@ -369,7 +369,7 @@ firebase deploy --only hosting
 
 #### Firebase Configuration
 
-The `firebase.json` file should look like:
+A `firebase.json` configuration file is already included in the project root:
 
 ```json
 {

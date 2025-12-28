@@ -117,6 +117,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }
 
+
+
     const loginWithGoogle = async () => {
         try {
             await signInWithPopup(auth, googleProvider)

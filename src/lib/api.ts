@@ -192,3 +192,41 @@ function detectVenue(url: string, content: string): string | undefined {
 
     return undefined
 }
+
+// Chat with papers using Gemini
+export async function chatWithPapers(query: string, papers: { title: string; content: string }[]): Promise<string> {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY
+
+    if (!apiKey) {
+        throw new Error("Gemini API key not configured")
+    }
+
+    try {
+        // Prepare context from papers
+        const contextText = papers.map(p => `Paper: ${p.title}\n\nContent:\n${p.content.slice(0, 30000)}`).join("\n\n---\n\n")
+
+        const prompt = `You are a research assistant helping a user understand a collection of academic papers.
+User Query: "${query}"
+
+Here is the content of the papers available to you:
+
+${contextText}
+
+Instructions:
+1. Answer the user's question based ONLY on the provided papers.
+2. Cite the specific papers (by title) that support your answer.
+3. If the answer cannot be found in the papers, say so clearly.
+4. Keep the response concise and helpful.
+5. Format your response with Markdown (bolding key points, using lists where appropriate).`
+
+        const response = await genai.models.generateContent({
+            model: "gemini-2.0-flash",
+            contents: prompt,
+        })
+
+        return response.text || "I couldn't generate a response."
+    } catch (error) {
+        console.error("Gemini chat error:", error)
+        return "Sorry, I encountered an error while analyzing the papers."
+    }
+}

@@ -7,11 +7,11 @@ import {
     Star,
     StarOff,
     Share2,
-    Trash2,
+
     MoreHorizontal,
     Plus,
     Search,
-    FileText,
+
     ExternalLink,
     Download,
     Check
@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+
 import { cn } from "@/lib/utils"
 
 interface Collection {

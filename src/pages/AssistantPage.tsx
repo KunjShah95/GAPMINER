@@ -14,6 +14,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useAuth } from "@/context/AuthContext"
+import { getCrawlResults, type CrawlResult } from "@/lib/firestore"
+import { chatWithPapers } from "@/lib/api"
 
 interface Message {
     id: string
@@ -31,50 +34,14 @@ const suggestedQuestions = [
     "Summarize the compute-related research gaps"
 ]
 
-// Simulated AI responses
-const mockResponses: Record<string, string> = {
-    default: `Based on my analysis of the crawled papers, I've identified several key patterns:
-
-**Recurring Themes:**
-1. **Data Scarcity** - 12 papers mention lack of diverse training data
-2. **Evaluation Gaps** - 9 papers note that benchmarks don't reflect real-world complexity
-3. **Compute Constraints** - 7 papers discuss training cost limitations
-
-Would you like me to dive deeper into any of these themes?`,
-
-    scalability: `Analyzing scalability-related gaps across your corpus:
-
-**Key Findings:**
-• Training costs prevent scaling beyond 32K context length (3 papers)
-• Model compression techniques degrade reasoning performance (2 papers)
-• Memory requirements limit batch sizes for fine-tuning (4 papers)
-
-**High-Impact Opportunity:** Developing efficient attention mechanisms that maintain quality while reducing compute requirements.
-
-Should I list the specific papers addressing these issues?`,
-
-    data: `The most common data-related limitations I found:
-
-1. **Low-Resource Languages** (8 papers)
-   - Lack of annotated datasets for non-English languages
-   - Representation imbalance in multilingual models
-
-2. **Domain Adaptation** (5 papers)
-   - Models struggle with specialized vocabulary
-   - Limited high-quality domain-specific corpora
-
-3. **Data Quality** (4 papers)
-   - Web-scraped data contains noise and biases
-   - Outdated information in retrieval corpora
-
-Want me to suggest potential solutions from recent papers?`
-}
-
 export function AssistantPage() {
+    const { user } = useAuth()
     const [messages, setMessages] = useState<Message[]>([])
     const [input, setInput] = useState("")
     const [isTyping, setIsTyping] = useState(false)
     const [copiedId, setCopiedId] = useState<string | null>(null)
+    const [papers, setPapers] = useState<CrawlResult[]>([])
+    const [isLoadingPapers, setIsLoadingPapers] = useState(true)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
     const scrollToBottom = () => {
@@ -84,6 +51,21 @@ export function AssistantPage() {
     useEffect(() => {
         scrollToBottom()
     }, [messages])
+
+    useEffect(() => {
+        async function loadPapers() {
+            if (!user) return
+            try {
+                const results = await getCrawlResults(user.id)
+                setPapers(results)
+            } catch (error) {
+                console.error("Failed to load papers:", error)
+            } finally {
+                setIsLoadingPapers(false)
+            }
+        }
+        loadPapers()
+    }, [user])
 
     const handleSend = async (text: string = input) => {
         if (!text.trim()) return
@@ -99,31 +81,35 @@ export function AssistantPage() {
         setInput("")
         setIsTyping(true)
 
-        // Simulate AI response
-        await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000))
+        try {
+            const paperContext = papers.map(p => ({
+                title: p.title,
+                content: p.content
+            }))
 
-        // Select mock response based on query
-        let response = mockResponses.default
-        if (text.toLowerCase().includes("scal")) {
-            response = mockResponses.scalability
-        } else if (text.toLowerCase().includes("data")) {
-            response = mockResponses.data
+            const responseText = await chatWithPapers(text, paperContext)
+
+            const assistantMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                role: "assistant",
+                content: responseText,
+                timestamp: new Date(),
+                suggestions: []
+            }
+
+            setMessages(prev => [...prev, assistantMessage])
+        } catch (error) {
+            console.error("Chat error:", error)
+            const errorMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                role: "assistant",
+                content: "Sorry, I encountered an error while processing your request.",
+                timestamp: new Date()
+            }
+            setMessages(prev => [...prev, errorMessage])
+        } finally {
+            setIsTyping(false)
         }
-
-        const assistantMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            role: "assistant",
-            content: response,
-            timestamp: new Date(),
-            suggestions: [
-                "Show me related papers",
-                "Export these findings",
-                "Find similar gaps"
-            ]
-        }
-
-        setMessages(prev => [...prev, assistantMessage])
-        setIsTyping(false)
     }
 
     const handleCopy = async (text: string, id: string) => {
@@ -164,8 +150,10 @@ export function AssistantPage() {
                                             Research Assistant Ready
                                         </h3>
                                         <p className="text-[hsl(var(--muted-foreground))] mb-6 max-w-sm">
-                                            Ask me anything about the research gaps extracted from your papers.
-                                            I can help identify patterns and connections.
+                                            {isLoadingPapers
+                                                ? "Loading your papers..."
+                                                : `Ready to analyze ${papers.length} papers. Ask me anything about research gaps.`
+                                            }
                                         </p>
                                         <div className="flex flex-wrap gap-2 justify-center max-w-md">
                                             {suggestedQuestions.slice(0, 3).map((q, i) => (
@@ -198,8 +186,8 @@ export function AssistantPage() {
                                             )}
                                             <div
                                                 className={`max-w-[80%] rounded-2xl px-4 py-3 ${msg.role === "user"
-                                                        ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
-                                                        : "bg-[hsl(var(--muted))]"
+                                                    ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
+                                                    : "bg-[hsl(var(--muted))]"
                                                     }`}
                                             >
                                                 <div className="whitespace-pre-wrap text-sm">
@@ -228,7 +216,7 @@ export function AssistantPage() {
                                                         </Button>
                                                     </div>
                                                 )}
-                                                {msg.suggestions && (
+                                                {msg.suggestions && msg.suggestions.length > 0 && (
                                                     <div className="mt-2 flex flex-wrap gap-1">
                                                         {msg.suggestions.map((s, i) => (
                                                             <Button
@@ -343,30 +331,22 @@ export function AssistantPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-3">
-                                <div className="space-y-1">
-                                    <Badge variant="secondary" className="text-[10px]">
-                                        Data Scarcity
-                                    </Badge>
-                                    <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                                        12 papers mention lack of diverse training data
-                                    </p>
-                                </div>
-                                <div className="space-y-1">
-                                    <Badge variant="secondary" className="text-[10px]">
-                                        Evaluation
-                                    </Badge>
-                                    <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                                        9 papers note benchmark inadequacies
-                                    </p>
-                                </div>
-                                <div className="space-y-1">
-                                    <Badge variant="secondary" className="text-[10px]">
-                                        Compute
-                                    </Badge>
-                                    <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                                        7 papers discuss training cost limitations
-                                    </p>
-                                </div>
+                                {papers.length > 0 ? (
+                                    <div className="space-y-1">
+                                        <Badge variant="secondary" className="text-[10px]">
+                                            Context Loaded
+                                        </Badge>
+                                        <p className="text-xs text-[hsl(var(--muted-foreground))]">
+                                            {papers.length} papers loaded into context.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-1">
+                                        <p className="text-xs text-[hsl(var(--muted-foreground))]">
+                                            No papers loaded yet. Crawl some papers to get started.
+                                        </p>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </div>
