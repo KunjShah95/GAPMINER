@@ -11,7 +11,6 @@ import {
     Target,
     LogIn,
     UserPlus,
-    LayoutDashboard,
     Users,
     Globe,
     BookOpen,
@@ -269,7 +268,7 @@ export function HomePage() {
 
     const handleGetStarted = () => {
         if (isAuthenticated) {
-            navigate("/dashboard")
+            navigate("/explore")
         } else {
             setAuthModalMode("register")
             setShowAuthModal(true)
@@ -363,13 +362,13 @@ export function HomePage() {
                         >
                             {isAuthenticated ? (
                                 <>
-                                    <Link to="/dashboard">
+                                    <Link to="/explore">
                                         <HoverBorderGradient
                                             containerClassName="rounded-xl"
                                             className="flex items-center gap-2 font-semibold px-8 py-3"
                                         >
-                                            <LayoutDashboard className="h-5 w-5" />
-                                            Go to Dashboard
+                                            <Search className="h-5 w-5" />
+                                            Go to Explore
                                             <ArrowRight className="h-4 w-4" />
                                         </HoverBorderGradient>
                                     </Link>
@@ -965,14 +964,14 @@ export function HomePage() {
                             Join thousands of researchers who are already using GapMiner to find their next breakthrough idea.
                         </p>
                         {isAuthenticated ? (
-                            <Link to="/dashboard">
+                            <Link to="/explore">
                                 <Button
                                     size="xl"
                                     variant="secondary"
                                     className="gap-2 bg-white text-black hover:bg-white/90"
                                 >
-                                    <LayoutDashboard className="h-5 w-5" />
-                                    Go to Dashboard
+                                    <Search className="h-5 w-5" />
+                                    Go to Explore
                                     <ArrowRight className="h-5 w-5" />
                                 </Button>
                             </Link>

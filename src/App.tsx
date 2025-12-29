@@ -3,7 +3,6 @@ import { Layout } from "@/components/layout"
 import { HomePage, CrawlPage, ExplorePage, InsightsPage, ComparisonPage, KnowledgeMapPage } from "@/pages"
 import { AssistantPage } from "@/pages/AssistantPage"
 import { CollectionsPage } from "@/pages/CollectionsPage"
-import { DashboardPage } from "@/pages/DashboardPage"
 import { AuthProvider } from "@/context/AuthContext"
 import { AuthModal } from "@/components/ui/auth-modal"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
@@ -19,14 +18,6 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/crawl"
               element={

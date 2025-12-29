@@ -26,7 +26,7 @@ export function AuthModal() {
         setIsLoading(true)
         try {
             await loginWithGoogle()
-            navigate("/dashboard")
+            navigate("/explore")
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to sign in with Google")
         } finally {
@@ -93,7 +93,7 @@ export function AuthModal() {
                                     </h2>
                                     <p className="text-center text-[hsl(var(--muted-foreground))] mb-6">
                                         {authModalMode === "signin"
-                                            ? "Sign in to access your research dashboard"
+                                            ? "Sign in to access your research insights"
                                             : "Join GapMiner to start discovering research gaps"}
                                     </p>
 

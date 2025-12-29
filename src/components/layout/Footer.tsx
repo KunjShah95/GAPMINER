@@ -21,7 +21,7 @@ export function Footer() {
 
     const handleGetStarted = () => {
         if (isAuthenticated) {
-            navigate("/dashboard")
+            navigate("/explore")
         } else {
             setAuthModalMode("register")
             setShowAuthModal(true)
@@ -47,7 +47,7 @@ export function Footer() {
                             and unsolved problems from academic papers to find your next breakthrough idea.
                         </p>
                         <Button size="sm" className="gap-2" onClick={handleGetStarted}>
-                            {isAuthenticated ? "Go to Dashboard" : "Get Started Free"}
+                            {isAuthenticated ? "Go to Explore" : "Get Started Free"}
                             <ArrowRight className="h-4 w-4" />
                         </Button>
                     </div>
@@ -96,8 +96,8 @@ export function Footer() {
                         <h4 className="font-semibold mb-4">Product</h4>
                         <ul className="space-y-3 text-sm text-[hsl(var(--muted-foreground))]">
                             <li>
-                                <Link to="/dashboard" className="hover:text-[hsl(var(--foreground))] transition-colors">
-                                    Dashboard
+                                <Link to="/explore" className="hover:text-[hsl(var(--foreground))] transition-colors">
+                                    Explore Gaps
                                 </Link>
                             </li>
                             <li>

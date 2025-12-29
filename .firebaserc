@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": ""
-  }
+    "default": "bwai1-467805"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -4,7 +4,6 @@ import {
     FileSearch,
     Menu,
     X,
-    LayoutDashboard,
     Sparkles,
     FolderOpen,
     LogIn,
@@ -95,7 +94,7 @@ export function Navbar() {
             <div className="container-wide">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
-                    <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 group">
+                    <Link to={isAuthenticated ? "/explore" : "/"} className="flex items-center gap-2 group">
                         <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] transition-transform group-hover:scale-105">
                             <FileSearch className="h-5 w-5" />
                             <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[hsl(var(--brand-primary))] text-[8px] font-bold text-white">
@@ -228,12 +227,12 @@ export function Navbar() {
                                                 </div>
                                                 <div className="p-1">
                                                     <Link
-                                                        to="/dashboard"
+                                                        to="/explore"
                                                         onClick={() => setUserMenuOpen(false)}
                                                         className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-[hsl(var(--accent))] transition-colors"
                                                     >
-                                                        <LayoutDashboard className="h-4 w-4" />
-                                                        Dashboard
+                                                        <Search className="h-4 w-4" />
+                                                        Explore
                                                     </Link>
                                                     <button
                                                         onClick={handleLogout}
