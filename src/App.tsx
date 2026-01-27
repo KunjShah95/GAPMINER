@@ -3,10 +3,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Layout } from "@/components/layout"
 import { AuthProvider } from "@/context/AuthContext"
+import { SubscriptionProvider } from "@/context/SubscriptionContext"
+import { TeamProvider } from "@/context/TeamContext"
 import { AuthModal } from "@/components/ui/auth-modal"
+import { UpgradeModal } from "@/components/ui/upgrade-modal"
 import { ProtectedRoute } from "@/components/ProtectedRoute"
 import { FloatingAssistant } from "@/components/FloatingAssistant"
 import { PageLoader } from "@/components/ui/LoadingSpinner"
+
 
 // Helper function for retrying lazy imports
 const lazyWithRetry = (componentImport: () => Promise<any>) =>
@@ -38,85 +42,108 @@ const ComparisonPage = lazyWithRetry(() => import("@/pages/ComparisonPage").then
 const KnowledgeMapPage = lazyWithRetry(() => import("@/pages/KnowledgeMapPage").then(module => ({ default: module.KnowledgeMapPage })))
 const AssistantPage = lazyWithRetry(() => import("@/pages/AssistantPage").then(module => ({ default: module.AssistantPage })))
 const CollectionsPage = lazyWithRetry(() => import("@/pages/CollectionsPage").then(module => ({ default: module.CollectionsPage })))
+const AdminPage = lazyWithRetry(() => import("@/pages/AdminPage").then(module => ({ default: module.AdminPage })))
+const TeamSettingsPage = lazyWithRetry(() => import("@/pages/TeamSettingsPage").then(module => ({ default: module.TeamSettingsPage })))
 
 function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
         <AuthProvider>
-          <AuthModal />
-          <FloatingAssistant />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route path="/" element={<HomePage />} />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <DashboardPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/crawl"
-                  element={
-                    <ProtectedRoute>
-                      <CrawlPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/explore"
-                  element={
-                    <ProtectedRoute>
-                      <ExplorePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/insights"
-                  element={
-                    <ProtectedRoute>
-                      <InsightsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/compare"
-                  element={
-                    <ProtectedRoute>
-                      <ComparisonPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/map"
-                  element={
-                    <ProtectedRoute>
-                      <KnowledgeMapPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/assistant"
-                  element={
-                    <ProtectedRoute>
-                      <AssistantPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/collections"
-                  element={
-                    <ProtectedRoute>
-                      <CollectionsPage />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-            </Routes>
-          </Suspense>
+          <SubscriptionProvider>
+            <TeamProvider>
+              <AuthModal />
+              <UpgradeModal />
+              <FloatingAssistant />
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route element={<Layout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ProtectedRoute>
+                          <DashboardPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/crawl"
+                      element={
+                        <ProtectedRoute>
+                          <CrawlPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/explore"
+                      element={
+                        <ProtectedRoute>
+                          <ExplorePage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/insights"
+                      element={
+                        <ProtectedRoute>
+                          <InsightsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/compare"
+                      element={
+                        <ProtectedRoute>
+                          <ComparisonPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/map"
+                      element={
+                        <ProtectedRoute>
+                          <KnowledgeMapPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/assistant"
+                      element={
+                        <ProtectedRoute>
+                          <AssistantPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/collections"
+                      element={
+                        <ProtectedRoute>
+                          <CollectionsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin"
+                      element={
+                        <ProtectedRoute>
+                          <AdminPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/team"
+                      element={
+                        <ProtectedRoute>
+                          <TeamSettingsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Route>
+                </Routes>
+              </Suspense>
+            </TeamProvider>
+          </SubscriptionProvider>
         </AuthProvider>
       </BrowserRouter>
     </ErrorBoundary>

@@ -301,17 +301,17 @@ export function HomePage() {
                     <motion.div
                         animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
                         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute top-1/4 left-[10%] w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/10"
+                        className="absolute top-1/4 left-[10%] w-20 h-20 rounded-2xl bg-linear-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/10"
                     />
                     <motion.div
                         animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
                         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                        className="absolute top-1/3 right-[15%] w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 backdrop-blur-sm border border-white/10"
+                        className="absolute top-1/3 right-[15%] w-16 h-16 rounded-full bg-linear-to-br from-cyan-500/20 to-blue-500/20 backdrop-blur-sm border border-white/10"
                     />
                     <motion.div
                         animate={{ y: [0, -15, 0] }}
                         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                        className="absolute bottom-1/3 left-[20%] w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-white/10"
+                        className="absolute bottom-1/3 left-[20%] w-12 h-12 rounded-lg bg-linear-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-white/10"
                     />
                 </div>
 
@@ -505,7 +505,7 @@ export function HomePage() {
 
                             {/* Visual Element */}
                             <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--brand-primary))]/20 to-[hsl(var(--brand-secondary))]/20 rounded-3xl blur-3xl" />
+                                <div className="absolute inset-0 bg-linear-to-br from-[hsl(var(--brand-primary))]/20 to-[hsl(var(--brand-secondary))]/20 rounded-3xl blur-3xl" />
                                 <div className="relative bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-3xl p-8 space-y-6">
                                     {/* Achievement badges */}
                                     <div className="flex items-center gap-4 p-4 rounded-xl bg-[hsl(var(--muted))]">
@@ -568,7 +568,7 @@ export function HomePage() {
                                 >
                                     <Card className="card-hover h-full group">
                                         <CardContent className="pt-6">
-                                            <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${feature.color} mb-4 group-hover:scale-110 transition-transform`}>
+                                            <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-linear-to-br ${feature.color} mb-4 group-hover:scale-110 transition-transform`}>
                                                 <feature.icon className="h-7 w-7 text-white" />
                                             </div>
                                             <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
@@ -615,12 +615,12 @@ export function HomePage() {
                                 >
                                     {/* Connector Line */}
                                     {idx < howItWorks.length - 1 && (
-                                        <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-[hsl(var(--brand-primary))] to-[hsl(var(--brand-secondary))] opacity-30" />
+                                        <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-linear-to-r from-[hsl(var(--brand-primary))] to-[hsl(var(--brand-secondary))] opacity-30" />
                                     )}
 
                                     <div className="text-center">
                                         <div className="relative inline-flex mb-6">
-                                            <div className="flex h-32 w-32 items-center justify-center rounded-3xl bg-gradient-to-br from-[hsl(var(--brand-primary))]/10 to-[hsl(var(--brand-secondary))]/10 border border-[hsl(var(--border))]">
+                                            <div className="flex h-32 w-32 items-center justify-center rounded-3xl bg-linear-to-brrom-[hsl(var(--brand-primary))]/10 to-[hsl(var(--brand-secondary))]/10 border border-[hsl(var(--border))]">
                                                 <step.icon className="h-12 w-12 text-[hsl(var(--brand-primary))]" />
                                             </div>
                                             <div className="absolute -top-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] font-bold text-lg">
@@ -685,7 +685,7 @@ export function HomePage() {
                                         </div>
                                         <p className="text-[hsl(var(--muted-foreground))] mb-6 italic">"{testimonial.quote}"</p>
                                         <div className="flex items-center gap-3">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--brand-primary))] to-[hsl(var(--brand-secondary))] text-white font-semibold text-sm">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-[hsl(var(--brand-primary))] to-[hsl(var(--brand-secondary))] text-white font-semibold text-sm">
                                                 {testimonial.avatar}
                                             </div>
                                             <div>
@@ -874,7 +874,7 @@ export function HomePage() {
 
                             {/* Contact Form */}
                             <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--brand-primary))]/10 to-[hsl(var(--brand-secondary))]/10 rounded-3xl blur-2xl" />
+                                <div className="absolute inset-0 bg-linear-to-br from-[hsl(var(--brand-primary))]/10 to-[hsl(var(--brand-secondary))]/10 rounded-3xl blur-2xl" />
                                 <Card className="relative">
                                     <CardContent className="pt-6">
                                         {contactSubmitted ? (

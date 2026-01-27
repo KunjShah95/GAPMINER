@@ -3,10 +3,18 @@
 import { GoogleGenAI } from "@google/genai"
 import type { Gap } from "./firestore"
 
+// Re-export Gap type for convenience
+export type { Gap }
+
 // Initialize Gemini
 const genai = new GoogleGenAI({
     apiKey: import.meta.env.VITE_GEMINI_API_KEY || "",
 })
+
+// Note: New typed infrastructure is available in:
+// - @/types/research.ts - Zod schemas for all response types
+// - @/lib/gemini-client.ts - Typed Gemini client wrapper
+// These can be incrementally adopted for better type safety
 
 // Types
 export interface ScrapedContent {

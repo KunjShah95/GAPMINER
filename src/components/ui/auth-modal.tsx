@@ -46,7 +46,7 @@ export function AuthModal() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-100 bg-black/60 backdrop-blur-sm"
                         onClick={handleClose}
                     />
 
@@ -55,11 +55,11 @@ export function AuthModal() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="fixed z-[101] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md"
+                        className="fixed z-101 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md"
                     >
                         <div className="relative bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-2xl shadow-2xl overflow-hidden">
                             {/* Gradient Header */}
-                            <div className="relative h-24 bg-gradient-to-br from-[hsl(var(--brand-primary))] to-[hsl(var(--brand-secondary))] flex items-center justify-center">
+                            <div className="relative h-24 bg-linear-to-br from-[hsl(var(--brand-primary))] to-[hsl(var(--brand-secondary))] flex items-center justify-center">
                                 <div className="absolute inset-0 dot-pattern opacity-20" />
                                 <motion.div
                                     initial={{ scale: 0 }}
@@ -102,7 +102,7 @@ export function AuthModal() {
                                         onClick={handleGoogleSignIn}
                                         disabled={isLoading}
                                     >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--brand-primary))] to-[hsl(var(--brand-secondary))] opacity-90" />
+                                        <div className="absolute inset-0 bg-linear-to-r from-[hsl(var(--brand-primary))] to-[hsl(var(--brand-secondary))] opacity-90" />
                                         <div className="relative flex items-center gap-2">
                                             {isLoading ? (
                                                 <>

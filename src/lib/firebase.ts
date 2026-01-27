@@ -13,15 +13,26 @@ const firebaseConfig = {
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
+// Validate config
+const missingKeys = Object.entries(firebaseConfig)
+    .filter(([key, value]) => !value && key !== 'measurementId')
+    .map(([key]) => key);
+
+if (missingKeys.length > 0) {
+    console.error(`Firebase configuration is missing the following keys: ${missingKeys.join(', ')}. Check your .env file.`);
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
-export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
 
 // Initialize Firebase services
 export const auth = getAuth(app)
 export const db = getFirestore(app)
 export const googleProvider = new GoogleAuthProvider()
 
-
+// Only initialize analytics if we have a measurementId and are in a browser environment
+export const analytics = (typeof window !== 'undefined' && firebaseConfig.measurementId) 
+    ? getAnalytics(app) 
+    : null;
 
 export default app
